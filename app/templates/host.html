@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block body %}
+<h1>{{ host.name }}</h1><p class="mute">{{ host.os }} | source: {{ host.source }} | {{ comps|length }} components</p>
+<h2>Open findings</h2>
+{% if findings %}<table><tr><th>Advisory</th><th>Component</th><th>Fixed in</th><th>Proposal</th></tr>{% for f in findings %}<tr>
+<td><b>{{ f.advisory_id }}</b>{% if f.severity %} <span class="tag {{ 'bad' if f.severity in ('CRITICAL','HIGH') else 'warn' }}">{{ f.severity }}</span>{% endif %}<br><span class="mute">{{ f.summary }}</span>{% if f.aliases %}<br><span class="mute">{{ f.aliases|join(', ') }}</span>{% endif %}</td>
+<td>{{ f.name }} {{ f.version }}<br><span class="mute">{{ f.ecosystem }}</span></td><td>{{ f.fixed_version or '-' }}</td>
+<td>{% if f.proposal_id %}<a href="/proposals/{{ f.proposal_id }}">{{ f.proposal_status }}</a>{% else %}<span class="mute">pending</span>{% endif %}</td></tr>{% endfor %}</table>
+{% else %}<p class="tag ok">No known vulnerabilities for the reported components.</p>{% endif %}
+<h2>Components</h2><table><tr><th>Ecosystem</th><th>Name</th><th>Version</th><th>Open</th></tr>{% for c in comps %}<tr><td class="mute">{{ c.ecosystem }}</td><td>{{ c.name }}</td><td>{{ c.version }}</td><td>{% if c.open_findings %}<span class="tag bad">{{ c.open_findings }}</span>{% endif %}</td></tr>{% endfor %}</table>
+{% endblock %}

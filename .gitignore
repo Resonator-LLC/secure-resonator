@@ -1,0 +1,5 @@
+.droplet-ip
+.ops-account
+deploy/.env
+__pycache__/
+*.pyc

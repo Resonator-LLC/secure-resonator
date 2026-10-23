@@ -1,0 +1,8 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}Secure Resonator{% endblock %}</title><link rel="stylesheet" href="/static/style.css"></head><body>
+<header><a class="brand" href="/">secure.resonator.am</a>
+{% if user %}<a href="/">Dashboard</a><a href="/settings">Settings</a><span class="sp"></span><span class="mute">{{ user.email or user.name }}</span><a class="btn" href="/logout">Log out</a>
+{% else %}<span class="sp"></span><a class="btn primary" href="/login">Sign in / Register</a>{% endif %}</header>
+<main>{% block body %}{% endblock %}</main>
+<footer>Secure Resonator is open source (<a href="https://github.com/Resonator-LLC/secure-resonator">GitHub</a>). Run it yourself for free, or let Resonator LLC run it for you. Resonator LLC, Yerevan.</footer>
+</body></html>

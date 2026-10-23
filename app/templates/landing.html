@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block body %}
+{% if error %}<p class="tag bad">Sign-in failed: {{ error }}</p>{% endif %}
+<div class="hero"><p class="mute">Secure, resonator, am I?</p>
+<h1>Security advisories for exactly your stack. Fixes you approve, agents apply.</h1>
+<p>Tell us what runs on your servers: let our collector agent read it, paste it in by hand, or upload the export of a scanner you already use. We consolidate advisories from many sources (OSV, distro security trackers, vendor feeds) into one stream, match it against your inventory, and hand you concrete steps. Nothing is changed without a human clicking <b>Approve</b>.</p>
+<p><a class="btn primary" href="/login">Create an account</a> <span class="mute">Two-factor authentication is mandatory.</span></p></div>
+<div class="cols">
+<div class="card"><h2>1. Inventory</h2><p>One line: <code>curl -fsSL https://secure.resonator.am/agent.sh | SECURE_TOKEN=... bash</code><br>Reads dpkg/apk/rpm, pip, npm, Docker images. Only names and versions leave the host.</p></div>
+<div class="card"><h2>2. Advisory stream</h2><p>Continuous matching against consolidated vulnerability data. New finding, new event, new proposal with the fixed version and the exact commands.</p></div>
+<div class="card"><h2>3. Approve, then apply</h2><p>You approve. The agent (ours, yours, or any Resonator peer) runs only approved steps and reports back.</p></div>
+</div>
+<h2>Open source, paid stream</h2><p>The software is free and self-hostable. What Resonator LLC sells is the consolidated, fast advisory stream and the agent tokens for AI-generated remediation plans, paid from your Resonator wallet.</p>
+{% endblock %}

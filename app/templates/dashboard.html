@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block body %}
+<div class="cards"><div class="card"><b>{{ stats.hosts }}</b>hosts</div><div class="card"><b>{{ stats.components }}</b>components</div>
+<div class="card"><b style="color:var(--bad)">{{ stats.open_findings }}</b>open findings</div><div class="card"><b style="color:var(--warn)">{{ stats.pending }}</b>proposals awaiting you</div></div>
+<h2>Proposals awaiting approval</h2>
+{% if proposals %}<table><tr><th>Host</th><th>Proposal</th><th></th></tr>{% for p in proposals %}<tr><td>{{ p.host }}</td><td><a href="/proposals/{{ p.id }}">{{ p.title }}</a><br><span class="mute">{{ p.rationale[:160] }}</span></td>
+<td><form class="inline" method="post" action="/proposals/{{ p.id }}/decide"><button class="btn ok" name="decision" value="approved">Approve</button> <button class="btn bad" name="decision" value="rejected">Reject</button></form></td></tr>{% endfor %}</table>
+{% else %}<p class="mute">Nothing pending.</p>{% endif %}
+<h2>Hosts</h2>
+{% if hosts %}<table><tr><th>Host</th><th>OS</th><th>Source</th><th>Components</th><th>Last report</th></tr>{% for h in hosts %}<tr><td><a href="/hosts/{{ h.id }}">{{ h.name }}</a></td><td>{{ h.os }}</td><td>{{ h.source }}</td><td>{{ h.n }}</td><td>{{ h.last_report_at.strftime('%Y-%m-%d %H:%M') if h.last_report_at }}</td></tr>{% endfor %}</table>
+{% else %}<p>No hosts yet. Create an agent token in <a href="/settings">Settings</a> and run the collector, or add a host manually below.</p>{% endif %}
+<details style="margin-top:1rem"><summary>Add a host manually</summary>
+<form method="post" action="/hosts/manual" style="max-width:600px"><p><input type="text" name="name" placeholder="hostname" required></p><p><input type="text" name="os_name" placeholder="OS, e.g. Debian 12 or Ubuntu 24.04"></p>
+<p><textarea name="components" rows="6" placeholder="one per line: ecosystem name version&#10;Debian openssl 3.0.11-1~deb12u2&#10;npm express 4.18.2&#10;PyPI requests 2.31.0" required></textarea></p><button class="btn primary">Save inventory</button></form></details>
+<h2>Activity</h2><table>{% for e in events %}<tr><td class="mute" style="white-space:nowrap">{{ e.created_at.strftime('%m-%d %H:%M') }}</td><td><span class="tag">{{ e.kind }}</span></td><td>{{ e.message }}</td></tr>{% endfor %}</table>
+{% endblock %}

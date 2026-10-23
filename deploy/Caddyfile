@@ -1,0 +1,47 @@
+{
+	email admin@resonator.am
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
+(logging) {
+	log {
+		output file /var/log/caddy/access.log {
+			roll_size 50mb
+			roll_keep 5
+		}
+		format json
+	}
+}
+
+(security) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options nosniff
+		X-Frame-Options SAMEORIGIN
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+}
+
+secure.resonator.am {
+	import logging
+	import security
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:8000
+}
+
+auth.secure.resonator.am {
+	import logging
+	import security
+	encode zstd gzip
+	# Keycloak: expose only what browsers and OIDC clients need; admin console and metrics stay closed.
+	@blocked path /metrics* /health*
+	respond @blocked 404
+	@admin path /admin* /realms/master*
+	respond @admin 404
+	reverse_proxy 127.0.0.1:8081 {
+		header_up X-Forwarded-Proto https
+	}
+}

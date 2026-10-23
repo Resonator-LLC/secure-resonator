@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block body %}
+<h1>Settings</h1>
+<h2>Agent tokens</h2><p class="mute">A token lets a collector report inventory and fetch approved proposals for your organisation. It never grants approval rights.</p>
+{% if new_token %}<div class="card"><b style="font-size:1rem">New token (shown once)</b><pre>{{ new_token }}</pre>
+<p>Report this host:</p><pre>SECURE_TOKEN={{ new_token }} bash <(curl -fsSL {{ public_url }}/agent.sh)</pre>
+<p>Keep it fresh (cron, hourly):</p><pre>0 * * * * SECURE_TOKEN={{ new_token }} bash <(curl -fsSL {{ public_url }}/agent.sh) >/dev/null 2>&1</pre></div>{% endif %}
+<form method="post" action="/settings/tokens" style="max-width:420px"><p><input type="text" name="label" placeholder="label, e.g. prod-web-1" required></p><button class="btn primary">Create token</button></form>
+{% if tokens %}<table><tr><th>Label</th><th>Created</th><th>Last used</th><th></th></tr>{% for t in tokens %}<tr><td>{{ t.label }}</td><td>{{ t.created_at.strftime('%Y-%m-%d') }}</td><td>{{ t.last_used_at.strftime('%Y-%m-%d %H:%M') if t.last_used_at else 'never' }}</td>
+<td><form class="inline" method="post" action="/settings/tokens/{{ t.id }}/revoke"><button class="btn bad">Revoke</button></form></td></tr>{% endfor %}</table>{% endif %}
+<h2>Account security</h2><p>Password, authenticator app (TOTP) and sessions are managed in <a href="{{ request.url.scheme }}://auth.secure.resonator.am/realms/secure/account">your account console</a>.</p>
+{% endblock %}

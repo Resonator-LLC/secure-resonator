@@ -1,0 +1,16 @@
+
+:root{--bg:#fafaf7;--fg:#1d1d1b;--mute:#6b6b66;--line:#e4e4de;--acc:#0b5fff;--ok:#1a7f37;--warn:#b35c00;--bad:#b3261e}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--fg)}
+header{display:flex;gap:1.5rem;align-items:center;padding:.8rem 1.5rem;border-bottom:1px solid var(--line);background:#fff}
+header a{color:var(--fg);text-decoration:none}header .brand{font-weight:700}header .sp{flex:1}
+main{max-width:1100px;margin:1.5rem auto;padding:0 1.5rem}h1,h2{font-weight:600;letter-spacing:-.01em}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem}.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:1rem}
+.card b{font-size:1.8rem;display:block}.mute{color:var(--mute)}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th,td{padding:.55rem .8rem;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}th{font-size:.8rem;text-transform:uppercase;color:var(--mute)}
+.btn{display:inline-block;padding:.45rem .9rem;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--fg);text-decoration:none;cursor:pointer;font:inherit}
+.btn.primary{background:var(--acc);color:#fff;border-color:var(--acc)}.btn.ok{background:var(--ok);color:#fff;border-color:var(--ok)}.btn.bad{color:var(--bad)}
+.tag{display:inline-block;padding:.05rem .5rem;border-radius:999px;font-size:.75rem;border:1px solid var(--line)}.tag.bad{background:#fde8e6;color:var(--bad)}.tag.warn{background:#fff1e0;color:var(--warn)}.tag.ok{background:#e6f4ea;color:var(--ok)}
+pre,code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.85rem}pre{background:#f3f3ee;padding:.8rem;border-radius:8px;overflow:auto}
+form.inline{display:inline}textarea,input[type=text]{width:100%;padding:.5rem;border:1px solid var(--line);border-radius:8px;font:inherit}
+.hero{padding:3rem 0}.hero h1{font-size:2.4rem;margin:.2rem 0}.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem}
+.steps li{margin:.4rem 0}footer{margin:3rem 0 1rem;color:var(--mute);font-size:.85rem;text-align:center}

@@ -1,0 +1,73 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: secure
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: secure
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U secure"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  keycloak:
+    build:
+      context: .
+      dockerfile: Dockerfile.keycloak
+    image: secure-keycloak:26.4
+    restart: unless-stopped
+    command: start --optimized
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://db:5432/keycloak
+      KC_DB_USERNAME: secure
+      KC_DB_PASSWORD: ${DB_PASSWORD}
+      KC_HOSTNAME: https://auth.secure.resonator.am
+      KC_HOSTNAME_STRICT: "true"
+      KC_HTTP_ENABLED: "true"
+      KC_PROXY_HEADERS: xforwarded
+      KC_HEALTH_ENABLED: "true"
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD}
+    ports:
+      - "127.0.0.1:8081:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app:
+    build: ../app
+    image: secure-app:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://secure:${DB_PASSWORD}@db:5432/secure
+      PUBLIC_URL: https://secure.resonator.am
+      OIDC_ISSUER: https://auth.secure.resonator.am/realms/secure
+      OIDC_ISSUER_INTERNAL: http://keycloak:8080/realms/secure
+      OIDC_CLIENT_ID: secure-app
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  worker:
+    image: secure-app:latest
+    restart: unless-stopped
+    command: python -m secure.worker
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://secure:${DB_PASSWORD}@db:5432/secure
+      PUBLIC_URL: https://secure.resonator.am
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  dbdata:

@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block body %}
+<p><a href="/">Dashboard</a>{% if p.host_id %} / <a href="/hosts/{{ p.host_id }}">{{ p.host }}</a>{% endif %}</p>
+<h1>{{ p.title }}</h1><p><span class="tag {{ 'ok' if p.status in ('approved','applied') else 'warn' if p.status=='proposed' else 'bad' }}">{{ p.status }}</span> proposed by {{ p.proposed_by }} on {{ p.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+<p>{{ p.rationale }}</p>
+{% if adv %}<details><summary>Advisory details ({{ adv.id }})</summary><pre>{{ adv.details }}</pre>
+{% for r in adv.raw.references or [] %}<div><a href="{{ r.url }}" rel="noopener">{{ r.url }}</a></div>{% endfor %}</details>{% endif %}
+<h2>Steps</h2><ol class="steps">{% for s in p.steps %}<li><span class="tag">{{ s.kind }}</span> {% if s.run %}<code>{{ s.run }}</code>{% endif %} {% if s.note %}<span class="mute">{{ s.note }}</span>{% endif %}{% if s.expect %} <span class="mute">expect {{ s.expect }}</span>{% endif %}</li>{% endfor %}</ol>
+{% if p.status == 'proposed' %}<form method="post" action="/proposals/{{ p.id }}/decide"><button class="btn ok" name="decision" value="approved">Approve: agent may run these steps</button> <button class="btn bad" name="decision" value="rejected">Reject</button></form>
+{% elif p.status == 'approved' %}<p>Approved. On the host run: <code>SECURE_TOKEN=... bash <(curl -fsSL https://secure.resonator.am/agent.sh) --apply</code></p>{% endif %}
+{% if p.result %}<h2>Result</h2><pre>{{ p.result.log }}</pre>{% endif %}
+{% endblock %}
